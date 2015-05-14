@@ -44,7 +44,7 @@ class Blackjack
     if @dealer_hand_value < 16
       dealer_card = @shoe.draw
       @dealer_hand_value += dealer_card.value.floor
-      puts "Dealer drew a " + dealer_card.dealer_display
+      puts "Dealer drew a " + dealer_card.display
     elsif @dealer_hand_value > 21
         puts "Dealer busts! You win!!"
         @player_score += 1
@@ -67,7 +67,9 @@ class Blackjack
     check_shoe
     player_draw
     player_draw
-    dealer_draw
+    dealer_card = @shoe.draw
+    @dealer_hand_value += dealer_card.value.floor
+    puts "Dealer drew a " + dealer_card.dealer_display
     dealer_card = @shoe.draw
     @dealer_hand_value += dealer_card.value.floor
   end
@@ -77,7 +79,7 @@ class Blackjack
       puts "Out of cards! Reshuffling..."
       @shoe = Show.new
       sleep 0.4
-      replay
+      # replay
     end
   end
 
@@ -91,7 +93,6 @@ class Blackjack
       @dealer_hand_value = 0
       @player_status = "hit"
       @dealer_status = "hit"
-      # @shoe = Show.new
       @player_card_count = 0
       check_shoe
       start
