@@ -60,8 +60,8 @@ class Blackjack
   end
 
   def replay
-    puts "Dealer: #{@dealer_score}."
-    puts "You: #{@player_score}."
+    puts "Dealer's score: #{@dealer_score}."
+    puts "Your score: #{@player_score}."
     puts "Would you like to play again? (yes or no)"
     replay_choice = gets.chomp.downcase
     if replay_choice == "yes"
@@ -117,3 +117,8 @@ class Blackjack
   replay
   end
 end
+
+game = Blackjack.new
+game.start
+game.first_draw
+game.subsequent_draws
