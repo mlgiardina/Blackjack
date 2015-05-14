@@ -1,13 +1,14 @@
 require_relative 'player'
 require_relative 'deck'
 require_relative 'card'
+require_relative 'show'
 
 class Blackjack
 
   def initialize
     @player_one = Player.new
     @dealer = Player.new
-    @deck = Deck.new
+    @shoe = Show.new
     @dealer_hand_value = 0
     @player_hand_value = 0
     @player_status = "hit"
@@ -18,11 +19,11 @@ class Blackjack
   end
 
   def start
-    puts "Let's play Blackjack!"
+    puts "Welcome!\nLet's play Blackjack!"
   end
 
   def player_draw
-    drawn_card = @deck.draw
+    drawn_card = @shoe.draw
     drawn_card_value = drawn_card.value
     if drawn_card_value == 11
       puts "You drew an Ace, how much would you like it to count for? (1 or 11)"
@@ -41,7 +42,7 @@ class Blackjack
 
   def dealer_draw
     if @dealer_hand_value < 16
-      dealer_card = @deck.draw
+      dealer_card = @shoe.draw
       @dealer_hand_value += dealer_card.value.floor
       puts "Dealer drew a " + dealer_card.dealer_display
     elsif @dealer_hand_value > 21
@@ -63,11 +64,21 @@ class Blackjack
     end
   end
   def first_draw
+    check_shoe
     player_draw
     player_draw
     dealer_draw
-    dealer_card = @deck.draw
+    dealer_card = @shoe.draw
     @dealer_hand_value += dealer_card.value.floor
+  end
+
+  def check_shoe
+    if @shoe.count == 0
+      puts "Out of cards! Reshuffling..."
+      @shoe = Show.new
+      sleep 0.4
+      replay
+    end
   end
 
   def replay
@@ -80,8 +91,9 @@ class Blackjack
       @dealer_hand_value = 0
       @player_status = "hit"
       @dealer_status = "hit"
-      @deck = Deck.new
+      # @shoe = Show.new
       @player_card_count = 0
+      check_shoe
       start
       first_draw
       subsequent_draws
@@ -92,6 +104,7 @@ class Blackjack
   end
 
   def subsequent_draws
+    check_shoe
     while @player_status == "hit"
       if @player_hand_value < 21 && @player_card_count >= 6
         puts "Your card count is over 5 and your hand is under 21. You win!!"
