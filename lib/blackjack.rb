@@ -14,6 +14,7 @@ class Blackjack
     @dealer_status = "hit"
     @dealer_score = 0
     @player_score = 0
+    @player_card_count = 0
   end
 
   def start
@@ -23,7 +24,17 @@ class Blackjack
   def player_draw
     drawn_card = @deck.draw
     drawn_card_value = drawn_card.value
+    if drawn_card_value == 11
+      puts "You drew an Ace, how much would you like it to count for? (1 or 11)"
+      ace_choice = gets.chomp.to_i
+      if ace_choice == 1
+        drawn_card_value = 1
+      else
+        drawn_card_value = 11
+      end
+    end
     @player_hand_value += drawn_card_value.floor
+    @player_card_count += 1
 
     puts "You drew a " + drawn_card.display + "which puts your hand total at #{@player_hand_value}"
   end
@@ -70,6 +81,7 @@ class Blackjack
       @player_status = "hit"
       @dealer_status = "hit"
       @deck = Deck.new
+      @player_card_count = 0
       start
       first_draw
       subsequent_draws
@@ -81,7 +93,11 @@ class Blackjack
 
   def subsequent_draws
     while @player_status == "hit"
-      if @dealer_hand_value == 21 && @player_hand_value == 21
+      if @player_hand_value < 21 && @player_card_count >= 6
+        puts "Your card count is over 5 and your hand is under 21. You win!!"
+        @player_score += 1
+        replay
+      elsif @dealer_hand_value == 21 && @player_hand_value == 21
         puts "You both have 21! It's a tie!"
         replay
       elsif @dealer_hand_value == 21
